@@ -3,14 +3,12 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import * as serviceWorker from './serviceWorker';
 import Header from './Header';
-import UrlBox from './UrlBox';
-import ShortenButton from './ShortenButton';
+import UrlForm from './UrlForm';
 
 ReactDOM.render(
   <React.StrictMode>
     <Header />
-    <UrlBox />
-    <ShortenButton />
+    <UrlForm />
   </React.StrictMode>,
   document.getElementById('root')
 );

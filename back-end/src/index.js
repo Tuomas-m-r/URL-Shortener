@@ -1,13 +1,19 @@
 const express = require("express");
 const app = express();
+const bodyParser = require("body-parser");
 const connectDB = require("./db.js");
 
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
+connectDB();
+
 app.get("/", (req, res) => {
-   connectDB();
+    res.send("Hello!");
 });
 
 app.post("/shorten", (req, res) => {
-
+    
 });
 
 app.listen(5000, () => {
