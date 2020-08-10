@@ -10,6 +10,8 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
+    "msnodesqlv8": "^2.0.2",
+    "mssql": "^6.2.1",
     "shortid": "^2.2.15"
   }
 }

@@ -1,8 +1,13 @@
 const express = require("express");
 const app = express();
+const connectDB = require("./db.js");
 
 app.get("/", (req, res) => {
-    res.send("Hello!");
+   connectDB();
+});
+
+app.post("/shorten", (req, res) => {
+
 });
 
 app.listen(5000, () => {
