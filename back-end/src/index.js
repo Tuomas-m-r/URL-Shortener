@@ -14,7 +14,7 @@ app.get("/", (req, res) => {
 
 app.post("/shorten", (req, res) => {
     sql.connect(config, (err) => {
-        if (err){
+        if(err){
             console.log(err);
         } else {
             console.log("Tietokanta yhteys avattu.");
@@ -27,16 +27,41 @@ app.post("/shorten", (req, res) => {
                 console.log(err);
                 sql.close();
             }
+
             console.log(JSON.stringify(data.recordset));
             if(JSON.stringify(data.recordset) === "[]"){
                 let id = shortid.generate();
                 sqlQuery = "INSERT INTO Url (OriginalURL, ShortID, ShortURL) VALUES ('" + req.body.originalUrl + "', '" + id + "', 'http://localhost:3000/" + id + "')";
-                request.query(sqlQuery, (err, data) => {
+                request.query(sqlQuery, (err) => {
                     if(err){
                         console.log(err);
                         sql.close();
                     }
                 });
+            }
+        });
+    });
+});
+
+app.get("/:id", (req, res) =>{
+    sql.connect(config, (err) => {
+        if(err){
+            console.log(err);
+        } else {
+            console.log("Tietokanta yhteys avattu.");
+        }
+
+        let request = new sql.Request();
+        let sqlQuery = "SELECT OriginalURL FROM Url WHERE ShortID='" + req.params.id + "'";
+        request.query(sqlQuery, (err, data) => {
+            if(err) {
+                console.log(err);
+                sql.close();
+            } else {
+                const json = JSON.stringify(data.recordset[0]);
+                const result = JSON.parse(json);
+                res.redirect(result.OriginalURL);
+                sql.close();
             }
         });
     });
