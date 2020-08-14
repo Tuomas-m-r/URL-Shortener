@@ -25,11 +25,12 @@ class UrlForm extends React.Component {
 
     render() {
         return(
-            <div>
+            <div class="container">
                 <form onSubmit={this.handleSubmit} action="/shorten" method="post" name="urlForm">
                     <input type="text" value={this.state.originalUrl} onChange={event => this.setState({ originalUrl: event.target.value })} name="long_url" placeholder="Enter your URL"></input>
                     <button type="submit">Shorten</button>
-                </form>
+                    <input id="shortenedLink" type="text" value={this.state.urlToPost} onChange={event => this.setState({ originalUrl: event.target.value })} name="long_url" placeholder="Your shortened URL"></input>
+                </form>        
             </div>
         );
     }

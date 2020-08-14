@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const sql = require("mssql/msnodesqlv8");
 const config = require("./dbConfig.js");
 const shortid = require("shortid");
+const { json } = require("express");
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -16,10 +17,9 @@ app.post("/shorten", (req, res) => {
     sql.connect(config, (err) => {
         if(err){
             console.log(err);
-        } else {
-            console.log("Tietokanta yhteys avattu.");
         }
 
+        let id = shortid.generate();
         let request = new sql.Request();
         let sqlQuery = "SELECT * FROM Url WHERE OriginalUrl='" + req.body.originalUrl + "'";
         request.query(sqlQuery, (err, data) => {
@@ -28,17 +28,27 @@ app.post("/shorten", (req, res) => {
                 sql.close();
             }
 
-            console.log(JSON.stringify(data.recordset));
             if(JSON.stringify(data.recordset) === "[]"){
-                let id = shortid.generate();
-                sqlQuery = "INSERT INTO Url (OriginalURL, ShortID, ShortURL) VALUES ('" + req.body.originalUrl + "', '" + id + "', 'http://localhost:3000/" + id + "')";
+                sqlQuery = "INSERT INTO Url (OriginalURL, ShortID, ShortURL) VALUES ('" + req.body.originalUrl + "', '" + id + "', 'http://localhost:5000/" + id + "')";
                 request.query(sqlQuery, (err) => {
                     if(err){
                         console.log(err);
                         sql.close();
                     }
-                });
+                });     
             }
+            
+            sqlQuery = "SELECT ShortURL FROM Url WHERE OriginalURL='" + req.body.originalUrl + "'";
+            request.query(sqlQuery, (err, data) =>{
+                if(err){
+                    console.log(err);
+                    sql.close();
+                } else {
+                    console.log("Your shortened link is: " + data.recordset[0].ShortURL);
+                    res.send(data.recordset[0].ShortURL);
+                    sql.close();
+                }
+            });
         });
     });
 });
@@ -47,8 +57,6 @@ app.get("/:id", (req, res) =>{
     sql.connect(config, (err) => {
         if(err){
             console.log(err);
-        } else {
-            console.log("Tietokanta yhteys avattu.");
         }
 
         let request = new sql.Request();
